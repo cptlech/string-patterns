@@ -1,0 +1,122 @@
+import org.jooq.codegen.GenerationTool
+import org.jooq.meta.jaxb.Database
+import org.jooq.meta.jaxb.Generator
+import org.jooq.meta.jaxb.Jdbc
+import org.jooq.meta.jaxb.Target
+
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath 'org.jooq:jooq:3.13.4'
+		classpath 'org.jooq:jooq-meta:3.13.4'
+		classpath 'org.jooq:jooq-codegen:3.13.4'
+		classpath 'org.postgresql:postgresql:42.2.16'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.1'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+ext.db = [
+		url: 'jdbc:postgresql://localhost:5432/string_patterns',
+		user: 'postgres',
+		password: 'postgres',
+		schema: 'public',
+		driver: 'org.postgresql.Driver',
+		jooqDbImpl: 'org.jooq.meta.postgres.PostgresDatabase',
+		packageName: 'com.ll.stringpatterns.jooq'
+]
+
+ext.genpath = new File("${projectDir}/build/generated/src/main/java/jooq")
+
+sourceSets.main.java.srcDirs += genpath.toString()
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	implementation 'org.jooq:jooq'
+	implementation 'org.postgresql:postgresql'
+	implementation "org.flywaydb:flyway-core"
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:testcontainers'
+}
+
+repositories {
+	mavenCentral()
+}
+
+java {
+	sourceCompatibility = '17'
+}
+
+tasks.register('generateJOOQClasses') {
+
+	doFirst {
+		def buildDir = new File( "$buildDir" )
+		if (!buildDir.exists()) {
+			buildDir.mkdirs()
+		}
+		if (!genpath.exists()) {
+			genpath.mkdirs()
+		}
+	}
+
+	org.jooq.meta.jaxb.Configuration configuration = new org.jooq.meta.jaxb.Configuration()
+			.withJdbc(new Jdbc()
+					.withDriver(db.driver)
+					.withUrl(db.url)
+					.withUser(db.user)
+					.withPassword(db.password)
+			)
+			.withGenerator(new Generator()
+					.withDatabase(new Database()
+							.withName(db.jooqDbImpl)
+							.withIncludes(".*")
+							.withExcludes("flyway_schema_history")
+							.withInputSchema(db.schema)
+					)
+					.withTarget(new Target()
+							.withPackageName(db.packageName)
+							.withDirectory(genpath.toString())
+					)
+			);
+
+	GenerationTool.generate(configuration);
+}
+
+compileJava {
+	dependsOn tasks.named('generateJOOQClasses')
+}
+
+
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+
+
