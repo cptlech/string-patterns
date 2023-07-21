@@ -5,6 +5,7 @@ import com.ll.stringpatterns.domain.task.Task;
 import com.ll.stringpatterns.repositories.TasksRepository;
 import com.ll.stringpatterns.usecases.create.CreateTaskCommand;
 import com.ll.stringpatterns.usecases.create.CreateTaskUseCase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,10 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class TasksEndpoints {
     private final CreateTaskUseCase createTaskUsecase;
     private final TasksRepository tasksRepository;
-
-    public TasksEndpoints(@Autowired CreateTaskUseCase createTaskUsecase, @Autowired TasksRepository tasksRepository) {
-        this.createTaskUsecase = createTaskUsecase;
-        this.tasksRepository = tasksRepository;
-    }
 
     @GetMapping("/tasks")
     public List<Task> getTasks(@RequestParam(defaultValue = "1") int page,

@@ -2,6 +2,7 @@ package com.ll.stringpatterns.repositories;
 
 import com.ll.stringpatterns.domain.task.Task;
 import com.ll.stringpatterns.jooq.tables.records.TaskRecord;
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -15,12 +16,9 @@ import java.util.UUID;
 import static com.ll.stringpatterns.jooq.tables.Task.TASK;
 
 @Repository
+@RequiredArgsConstructor
 public class TasksRepository {
-    private DSLContext dslContext;
-
-    public TasksRepository(@Autowired DSLContext dslContext) {
-        this.dslContext = dslContext;
-    }
+    private final DSLContext dslContext;
 
     public List<Task> getTasks(int page, int pageSize) {
         return dslContext.select().from(TASK).orderBy(TASK.CREATED.desc())

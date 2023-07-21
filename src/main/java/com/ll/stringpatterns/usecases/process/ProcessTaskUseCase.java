@@ -7,7 +7,7 @@ import com.ll.stringpatterns.repositories.TasksRepository;
 import com.ll.stringpatterns.usecases.process.searchpattern.PatternSearchResult;
 import com.ll.stringpatterns.usecases.process.searchpattern.ProgressNotifier;
 import com.ll.stringpatterns.usecases.process.searchpattern.StringPatternSearcher;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
@@ -15,18 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 @Service
+@RequiredArgsConstructor
 public class ProcessTaskUseCase {
-    private ExecutorService executorService;
-    private TasksRepository taskRepository;
-    private StringPatternSearcher stringPatternSearcher;
-
-    public ProcessTaskUseCase(@Autowired TasksRepository taskRepository,
-                              @Autowired StringPatternSearcher stringPatternSearcher,
-                              @Autowired ExecutorService executorService) {
-        this.taskRepository = taskRepository;
-        this.stringPatternSearcher = stringPatternSearcher;
-        this.executorService = executorService;
-    }
+    private final ExecutorService executorService;
+    private final TasksRepository taskRepository;
+    private final StringPatternSearcher stringPatternSearcher;
 
     public void process(Task task, int delayInMilliseconds) {
         executorService.submit(() -> {

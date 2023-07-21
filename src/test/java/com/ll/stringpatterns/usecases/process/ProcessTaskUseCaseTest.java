@@ -34,7 +34,7 @@ public class ProcessTaskUseCaseTest {
 
     @BeforeEach
     public void setUp() {
-        this.processTaskUseCase = new ProcessTaskUseCase(tasksRepository, stringPatternSearcher, executorService);
+        this.processTaskUseCase = new ProcessTaskUseCase(executorService, tasksRepository, stringPatternSearcher);
     }
 
     @Test
