@@ -5,8 +5,10 @@ import com.ll.stringpatterns.repositories.TasksRepository;
 import com.ll.stringpatterns.usecases.process.ProcessTaskUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -14,7 +16,7 @@ import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.mockito.Mockito.verify;
-
+@ExtendWith(MockitoExtension.class)
 public class CreateTaskUseCaseTest {
 
     private CreateTaskUseCase createTaskUseCase;
@@ -25,7 +27,6 @@ public class CreateTaskUseCaseTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.createTaskUseCase = new CreateTaskUseCase(tasksRepository, processTaskUseCase);
     }
 

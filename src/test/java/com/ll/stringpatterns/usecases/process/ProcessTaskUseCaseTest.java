@@ -8,7 +8,9 @@ import com.ll.stringpatterns.usecases.process.searchpattern.ProgressNotifier;
 import com.ll.stringpatterns.usecases.process.searchpattern.StringPatternSearcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@ExtendWith(MockitoExtension.class)
 public class ProcessTaskUseCaseTest {
     private ProcessTaskUseCase processTaskUseCase;
     @Mock
@@ -32,7 +34,6 @@ public class ProcessTaskUseCaseTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.processTaskUseCase = new ProcessTaskUseCase(tasksRepository, stringPatternSearcher, executorService);
     }
 
