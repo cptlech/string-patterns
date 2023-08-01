@@ -25,7 +25,7 @@ public class CreateTaskCommand {
 
     public static CreateTaskCommand fromRequest(TaskRequest taskRequest) {
         return new CreateTaskCommand(taskRequest.getPattern(), taskRequest.getString(), taskRequest.getDelay(),
-                Clock.systemUTC(), ()->UUID.randomUUID());
+                Clock.systemUTC(), UUID::randomUUID);
     }
 
     public Task create() {

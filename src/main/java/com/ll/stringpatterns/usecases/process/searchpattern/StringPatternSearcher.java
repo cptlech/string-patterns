@@ -8,7 +8,6 @@ public class StringPatternSearcher {
     public PatternSearchResult run(String pattern, String string, ProgressNotifier progressNotifier,
                                    int delayInMilliseconds) {
         int[] matchesCount = new int[string.length()];
-
         int currentIndex = 0;
         progressNotifier.notify(0);
         while (currentIndex < string.length()) {
