@@ -49,6 +49,38 @@ public class TasksEndpointsTest {
     }
 
     @Test
+    public void shouldReturn400ForNoPattern() throws Exception {
+        this.mockMvc.perform(post("/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"string\":\"AAA\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400ForEmptyPattern() throws Exception {
+        this.mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"string\":\"AAA\",\"pattern\":\"\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400ForNoString() throws Exception {
+        this.mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"pattern\":\"A\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400ForEmptyString() throws Exception {
+        this.mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"string\":\"\",\"pattern\":\"B\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void shouldReturnTaskJSON() throws Exception {
         Task task = Task.builder().id(UUID.fromString("fc5709f8-be14-4e5d-a8cf-183fabc66586")).string("string").pattern("pattern")
                         .progress(0).created(LocalDateTime.of(2023, 7, 7, 10, 0))
