@@ -12,16 +12,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.org.hamcrest.core.StringRegularExpression;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
+import static org.mockito.ArgumentMatchers.matches;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -75,11 +77,11 @@ public class TasksEndpointsTest {
     }
 
     @Test
-    public void shouldReturnCreatedTaskId() throws Exception {
+    public void shouldReturnCreatedTaskIdJSON() throws Exception {
         this.mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"string\":\"AAA\",\"pattern\":\"B\"}"))
                         .andExpect(status().isCreated())
-                        .andExpect(content().string(new MatchesPattern(Pattern.compile(UUID_REGEX))));
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.taskId").value(MatchesPattern.matchesPattern(UUID_REGEX)));
     }
 }

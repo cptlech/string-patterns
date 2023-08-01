@@ -1,12 +1,12 @@
 package com.ll.stringpatterns.api.http.v1;
 
 import com.ll.stringpatterns.api.http.v1.requests.TaskRequest;
+import com.ll.stringpatterns.api.http.v1.responses.TaskId;
 import com.ll.stringpatterns.domain.task.Task;
 import com.ll.stringpatterns.repositories.TasksRepository;
 import com.ll.stringpatterns.usecases.create.CreateTaskCommand;
 import com.ll.stringpatterns.usecases.create.CreateTaskUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +32,10 @@ public class TasksEndpoints {
         return tasksRepository.getTask(id).orElseThrow();
     }
 
-    @PostMapping("/tasks")
+    @PostMapping(value = "/tasks", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createTask(@RequestBody TaskRequest taskRequest) {
-        return createTaskUsecase.createTask(CreateTaskCommand.fromRequest(taskRequest)).getId().toString();
+    public @ResponseBody TaskId createTask(@RequestBody TaskRequest taskRequest) {
+        return new TaskId(createTaskUsecase.createTask(CreateTaskCommand.fromRequest(taskRequest)).getId().toString());
     }
 
     @ExceptionHandler(NoSuchElementException.class)
