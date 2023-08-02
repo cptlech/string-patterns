@@ -116,4 +116,16 @@ public class TasksEndpointsTest {
                         .andExpect(status().isCreated())
                         .andExpect(MockMvcResultMatchers.jsonPath("$.taskId").value(MatchesPattern.matchesPattern(UUID_REGEX)));
     }
+
+    @Test
+    public void shouldReturn400ForMalformedUUID() throws Exception {
+        this.mockMvc.perform(get("/task?id=xxx"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400ForNoUUID() throws Exception {
+        this.mockMvc.perform(get("/task"))
+                .andExpect(status().isBadRequest());
+    }
 }
